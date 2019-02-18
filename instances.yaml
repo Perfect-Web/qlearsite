@@ -1,0 +1,28 @@
+---
+- name: Test 1
+  hostname: "server1.test.vpn.domain.com"
+  ssh_user: centos
+  remote_user: root
+  paths:
+  - path: /var/www
+    owner: apache
+    group: apache
+    mode: u=rwx,g=rxw,o=
+
+- name: Live 1
+  hostname: "server1.live.vpn.domain.com"
+  ssh_user: centos
+  remote_user: root
+  paths:
+  - path: /etc/service1
+    owner: liveusr
+    group: liveusr
+    mode: u=rwx,g=,o=
+  - path: /etc/service2
+    owner: liveusr
+    group: liveusr
+    mode: u=rwx,g=,o=
+
+- name: Live 2
+  hostname: "server2.live.vpn.domain.com"
+  ssh_user: ubuntu

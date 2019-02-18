@@ -1,0 +1,6 @@
+FROM panubo/sshd
+
+RUN apk update && apk add sudo
+RUN echo "centos    ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+CMD ["/usr/sbin/sshd", "-D", "-f", "/etc/ssh/sshd_config", "-e", "-o", "StrictModes=no"]

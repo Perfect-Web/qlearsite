@@ -1,0 +1,80 @@
+version: '3'
+services:
+
+  php:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.php
+    networks:
+      - qlearsite
+    working_dir: /php
+    volumes:
+      - ./instances.yaml:/instances.yaml
+      - ./php:/php
+      - ./ssh/id_rsa:/root/.ssh/id_rsa
+    entrypoint: "sleep 900000000000000"
+
+  python:
+    image: python:3-stretch
+    networks:
+      - qlearsite
+    working_dir: /python
+    volumes:
+      - ./instances.yaml:/instances.yaml
+      - ./python:/python
+      - ./ssh/id_rsa:/root/.ssh/id_rsa
+    entrypoint: "sleep 900000000000000"
+
+  node:
+    image: node:10-slim
+    networks:
+      - qlearsite
+    working_dir: /node.js
+    volumes:
+      - ./instances.yaml:/instances.yaml
+      - ./node.js:/node.js
+      - ./ssh/id_rsa:/root/.ssh/id_rsa
+    entrypoint: "sleep 900000000000000"
+
+  server1.test.vpn.domain.com:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.sudo
+    hostname: server1.test.vpn.domain.com
+    container_name: "qlearsite_server1"
+    networks:
+      - qlearsite
+    volumes:
+      - ./ssh/id_rsa.pub:/etc/authorized_keys/centos
+    environment:
+      SSH_USERS: centos:1100:1100
+
+  server1.live.vpn.domain.com:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.sudo
+    hostname: server1.live.vpn.domain.com
+    container_name: "qlearsite_server2"
+    networks:
+      - qlearsite
+    volumes:
+      - ./ssh/id_rsa.pub:/etc/authorized_keys/centos
+    environment:
+      SSH_USERS: centos:1100:1100
+
+  server2.live.vpn.domain.com:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.sudo
+    hostname: server2.live.vpn.domain.com
+    container_name: "qlearsite_server3"
+    networks:
+      - qlearsite
+    volumes:
+      - ./ssh/id_rsa.pub:/etc/authorized_keys/ubuntu
+    environment:
+      SSH_USERS: ubuntu:1100:1100
+    command: "/usr/sbin/sshd -D -o StrictModes=no -e -f /etc/ssh/sshd_config"
+
+networks:
+  qlearsite:
